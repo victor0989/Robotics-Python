@@ -1,0 +1,33 @@
+#Machine learning models for robotics and testing errors
+#Here I am going to code some basics of machine learning models for robotics
+#Create robot models
+
+>>>from pybotics.predefined_models import ur10
+>>>from pybotics.robot import Robot
+>>>nominal_robot = Robot.from_paremeters(ur10())
+
+>>>defective_robot.tool.position = [0.1,0,0]
+>>>print(defective_robot)
+>>>Robot(kinematic_chain=MDHKinematicChain(_links=[RevoluteMDHLink(alpha=0.0, a=0.0, theta=0.0, d=118.0), RevoluteMDHLink(alpha=1.5707963267948966, a=0.0, theta=3.141592653589793, d=0.0), RevoluteMDHLink(alpha=0.0, a=612.7, theta=0.0, d=0.0), RevoluteMDHLink(alpha=0.0, a=571.6, theta=0.0, d=163.9), RevoluteMDHLink(alpha=-1.5707963267948966, a=0.0, theta=0.0, d=115.7), RevoluteMDHLink(alpha=1.5707963267948966, a=0.0, theta=3.141592653589793, d=92.2)]), tool=Tool(matrix=array([[1. , 0. , 0. , 0.1],
+       [0. , 1. , 0. , 0. ],
+       [0. , 0. , 1. , 0. ],
+       [0. , 0. , 0. , 1. ]]), mass=0, cg=array([0., 0., 0.])), world_frame=array([[1., 0., 0., 0.],
+       [0., 1., 0., 0.],
+       [0., 0., 1., 0.],
+       [0., 0., 0., 1.]]), random_state=RandomState(MT19937) at 0x7EB794C98B40, home_position=array([0., 0., 0., 0., 0., 0.]), _joints=array([0., 0., 0., 0., 0., 0.]), _joint_limits=array([[-3.14159265, -3.14159265, -3.14159265, -3.14159265, -3.14159265,
+        -3.14159265],[ 3.14159265,  3.14159265,  3.14159265,  3.14159265,  3.14159265,3.14159265]]))
+
+
+#The data contains outliers which are defined as observations that are far from the others (i.e., defective TCP).
+Outlier detection estimators try to fit the regions where the training data is the most concentrated, ignoring the deviant observations.
+
+>>> from sklearn.neighbors import LocalOutlierFactor
+>>> # create clasifiers and predictions
+>>> localFactor = LocalOutlierFactor(contamination='auto')
+>>> # predict
+>>> y_pred = localfactor.fit_predict(data)
+
+# compute accuracy to predict number of errors divided by the length of the variable predictor mutiply by one hundred possible cases
+n_errors = (y_pred != truth).sum()
+accuracy = (1 - n_errors / len(y_pred)) * 100
+print(f"Accuracy: {accuracy:.2f}%")
