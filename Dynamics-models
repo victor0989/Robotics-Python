@@ -1,0 +1,34 @@
+>>> from pybotics.robot import Robot
+>>> from pybotics.predefined_models import ur10
+>>> robot = Robot.from_parameters(ur10())
+>>> forces = [0, 0, 10]
+>>> torques = [0, 0, 0]
+>>> wrench = [*forces, *torques] 
+>>> print(robot)
+Robot(kinematic_chain=MDHKinematicChain(_links=[RevoluteMDHLink(alpha=0.0, a=0.0, theta=0.0, d=118.0), RevoluteMDHLink(alpha=1.5707963267948966, a=0.0, theta=3.141592653589793, d=0.0), RevoluteMDHLink(alpha=0.0, a=612.7, theta=0.0, d=0.0), RevoluteMDHLink(alpha=0.0, a=571.6, theta=0.0, d=163.9), RevoluteMDHLink(alpha=-1.5707963267948966, a=0.0, theta=0.0, d=115.7), RevoluteMDHLink(alpha=1.5707963267948966, a=0.0, theta=3.141592653589793, d=92.2)]), tool=Tool(matrix=array([[1., 0., 0., 0.],
+       [0., 1., 0., 0.],
+       [0., 0., 1., 0.],
+       [0., 0., 0., 1.]]), mass=0, cg=array([0., 0., 0.])), world_frame=array([[1., 0., 0., 0.],
+       [0., 1., 0., 0.],
+       [0., 0., 1., 0.],
+       [0., 0., 0., 1.]]), random_state=RandomState(MT19937) at 0x7D110BC03640, home_position=array([0., 0., 0., 0., 0., 0.]), _joints=array([0., 0., 0., 0., 0., 0.]), _joint_limits=array([[-3.14159265, -3.14159265, -3.14159265, -3.14159265, -3.14159265,
+        -3.14159265],
+       [ 3.14159265,  3.14159265,  3.14159265,  3.14159265,  3.14159265,
+         3.14159265]]))
+>>> print(wrench)
+[0, 0, 10, 0, 0, 0]
+
+>>> import numpy as np
+>>> robot.joins = np.deg2rad([0, 0, 0, 0, 0, 0])
+>>> j_torques = robot.compute_joint_torques(wrench)
+>>> print(f'Robot Joints: {robot.joints}')
+Robot Joints: [0. 0. 0. 0. 0. 0.]
+>>> print(f'Joint Torques: {j_torques}')
+Joint Torques: [11843.     0.     0.     0.     0.     0.]
+>>> 
+>>> robot.joints = np.deg2rad([0, -90, -90, 0, -90, 0])
+>>> j_torques = robot.compute_joint_torques(wrench)
+>>> print(f'Robot Joints: {robot.joints}')
+Robot Joints: [ 0.         -1.57079633 -1.57079633  0.         -1.57079633  0.        ]
+>>> print(f'Joint Torques: {j_torques}')
+Joint Torques: [-1639.  7284.  1157.  1157.     0.     0.]
