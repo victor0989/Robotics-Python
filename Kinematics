@@ -1,0 +1,86 @@
+#A Robot-model, at a very minimum, is a kinematic chain
+#The kinematic chain is defined by a series of parameters
+#The forward kinematics (FK) refer to the use of the kinematic equations of a robot to compute the pose of the end-effector
+(i.e., 4x4 transform matrix) from specified values for the joint parameters (i.e., joint angles)
+
+******************************************************************************************************************************************
+#WORK
+from pybotics.robot import Robot
+from pybotics.predefined_models import ur10
+robot = Robot.from_parameters(ur10())
+print(robot)
+Robot(kinematic_chain=MDHKinematicChain(_links=[RevoluteMDHLink(alpha=0.0, a=0.0, theta=0.0, d=118.0), RevoluteMDHLink(alpha=1.5707963267948966, a=0.0, theta=3.141592653589793, d=0.0), RevoluteMDHLink(alpha=0.0, a=612.7, theta=0.0, d=0.0), RevoluteMDHLink(alpha=0.0, a=571.6, theta=0.0, d=163.9), RevoluteMDHLink(alpha=-1.5707963267948966, a=0.0, theta=0.0, d=115.7), RevoluteMDHLink(alpha=1.5707963267948966, a=0.0, theta=3.141592653589793, d=92.2)]), tool=Tool(matrix=array([[1., 0., 0., 0.],
+       [0., 1., 0., 0.],
+       [0., 0., 1., 0.],
+       [0., 0., 0., 1.]]), mass=0, cg=array([0., 0., 0.])), world_frame=array([[1., 0., 0., 0.],
+       [0., 1., 0., 0.],
+       [0., 0., 1., 0.],
+       [0., 0., 0., 1.]]), random_state=RandomState(MT19937) at 0x7D110BC03840, home_position=array([0., 0., 0., 0., 0., 0.]), _joints=array([0., 0., 0., 0., 0., 0.]), _joint_limits=array([[-3.14159265, -3.14159265, -3.14159265, -3.14159265, -3.14159265,
+        -3.14159265],[ 3.14159265,  3.14159265,  3.14159265,  3.14159265,  3.14159265,3.14159265]]))
+
+# see that the chain is random_state=RandomState(MT19937) at 0x7D110BC03840
+#Numpy to calculate the state of the arrays
+#Sets an positional values in the array joint
+
+#Robot state examples
+# Here we can build robot states in an inline mode with some ax legend 
+import matplotlib.pyplot as plt
+fig, ax = plt.subplots()
+ax.plot(sys.times, states)
+ax.set_xlabel('{} [s]'.format(sm.latex(t, mode='inline')));
+ax.set_ylabel('States');
+ax.legend(['$x$', '$y$', '$z$', '$q_1$', '$q_2$', '$q_3$', '$u_x$', '$u_y$', '$u_z$', '$u_1$', '$u_2$', '$u_3$'], fontsize=10)
+plt.show()
+
+#Numoy to calculate the positional parameters from the robot x
+import numpy as np
+np.set_printoptions(suppress=True)
+joints = np.deg2rad([4,4,4,4,4,4])
+pose = robot.fk(joints)
+
+#Printing the robot positional gestures across numpy:
+>>> print(pose)
+[[    0.9614031     -0.27513954     0.00152063 -1138.80693937]
+ [   -0.00252862    -0.01436178    -0.99989367  -336.13336578]
+ [    0.27513213     0.96129702    -0.01450319  -118.80000716]
+ [    0.             0.             0.             1.        ]]
+
+*****************************************************************************************************************************************
+
+#The inverse kinematics (IK) makes use of the kinematics equations to determine the joint parameters that provide a desired position for the robot's end-effector
+The default internal IK implementation uses scipy.optimize.least_squares with joint limit bounds
+
+solved_joints = robot.ik(pose)
+>>> print(np.rad2deg(solved_joints))
+[3.999999   4.11127142 3.76985844 4.15861771 3.99984732 3.96034731]
+
+#Kinematics API
+#from .algorithm import Algorithm
+[docs]class Kinematics(Algorithm):
+    """
+    Base class of Kinematics algorithms.
+    Specifically, this algorithm handles computing of forward/inverse kinematics, and jacobian.
+
+    The algorithm should take a robot model urdf, specified in a tree of joint frames, in the constructor,
+    and compute forward/inverse kinematics and jacobian correspond to that urdf.
+    """
+# def inverse_kinematics(self, position, orientation):
+        """
+        This function takes in position and orientation of end effector, and map to joint angles.
+
+        Args:
+            position: position vector as list-like objects in the form of [x, y, z]. Unit: meters.
+            orientation: orientation vector or matrix with one of the following forms:
+                1) euler angles, as list-like object of form [x, y, z]
+                2) quaternion, as list-like object of form [x, y, z, w]
+                3) a 3x3 3D rotation matrix
+        Returns:
+            joint_angles: list of joint angles correspond to the queried end effector. Unit: radius.
+                i.e. for a 5DoF arm with (joint1, joint2, ..., joint5) in urdf,
+                this function should return a vector with size 5
+                of (angle1, angle2, ..., angle5)
+
+        If an inverse kinematics solution cannot be found, this function should raise an error.
+        """
+        raise NotImplementedError()
+***************************************************************************************************************************************
