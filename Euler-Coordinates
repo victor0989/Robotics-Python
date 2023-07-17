@@ -1,0 +1,67 @@
+#EULER COORDINATES TO CREATE A NEW ROBOT
+
+>>> import sympy as sm
+>>> import sympy.physics.mechanics as me
+>>> from pydy.system import System
+>>> import numpy as np
+>>> import matplotlib.pyplot as plt
+>>> from pydy.codegen.ode_function_generators import generate_ode_function>>> from scipy.integrate import odeint
+>>> import scipy.io as sio
+>>> me.init_vprinting()
+>>> ISS = me.ReferenceFrame('N')
+>>> Body = me.ReferenceFrame('B')
+>>> # coordinates Euler angles
+>>> b1, b2, b3 = me.dynamicsymbols('b1:4')
+>>> B.orient(ISS, 'Body' , (b1, b2, b3, 'xyz') #BODY coordinates
+
+#COORDINATES FOR CUBE-ROBOT
+>>> iss = me.Point('0')
+>>> iss.set_vel(ISS, 0)
+>>> x,y,z = me.dynamicsymbols('x, y, z') # coordinates of the mass center >>> line = sm.symbols('l') # side of cube
+>>> cm = iss.locatenew('C', x * ISS.x + y * ISS.y + z * ISS.z) # ISS coordinates factorization
+
+#Kinematical Differential Equations
+x = me.dynamicsymbols('u_x')
+uy = me.dynamicsymbols('u_y')
+uz = me.dynamicsymbols('u_z')
+u1 = me.dynamicsymbols('u_1')
+u2 = me.dynamicsymbols('u_2')
+u3 = me.dynamicsymbols('u_3')
+
+z1 = sm.Eq(ux, x.diff())
+z2 = sm.Eq(uy, y.diff())
+z3 = sm.Eq(uz, z.diff())
+z4 = sm.Eq(u1, q1.diff())
+z5 = sm.Eq(u2, q2.diff())
+z6 = sm.Eq(u3, q3.diff())
+u = sm.solve([z1, z2, z3, z4, z5, z6], x.diff(), y.diff(), z.diff(), q1.diff(), q2.diff(), q3.diff())
+u
+
+#VELOCITY FOR OUR ROBOT
+cm.set_vel(ISS, cm.pos_from(O).dt(ISS).subs(u))
+V_B_ISS_ISS = cm.vel(ISS)
+V_B_ISS_ISS # "velocity of Astrobee CM w.r.t ISS RF expressed in ISS RF"
+>>> V_B_ISS_ISS = cm.vel(ISS)
+>>> V_B_ISS_ISS # "velocity of Astrobee CM w.r.t ISS RF expressed in ISS RF"
+ẋ n_x + ẏ n_y + ż n_z
+
+#Acceleration
+>>> A_B_ISS_ISS = cm.acc(ISS).subs(u) #uds substraction
+
+#Angular motion
+B.set_ang_vel(ISS, B.ang_vel_in(ISS).subs(u))
+Omega_B_ISS_B = B.ang_vel_in(ISS)
+Omega_B_ISS_B # "angular velocity of body RF w.r.t ISS RF expressed in body RF"
+
+#Mass-inertia
+>>> Ax, Ay, Az = sm.symbols('A_x, A_y, A_z') # principal moments of inertia 
+>>> inertia = me.inertia(B, Ax, Ay, Az) # inertia XOR parameters and summatory of moments
+>>> Fx_mag, Fy_mag, Fz_mag = me.dynamicsymbols('Fmag_x, Fmag_y, Fmag_z') #FORCES-GRAVITATIONAL
+
+>>> Fx = Fx_mag * ISS.x
+>>> Fy = Fy_mag * ISS.y
+>>> Fz = Fz_mag * ISS.z
+
+>>> Fx, Fy, Fz
+(|F|ₓ n_x, |F|_y n_y, |F|_z n_z)
+
