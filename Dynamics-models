@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 >>> from pybotics.robot import Robot
 >>> from pybotics.predefined_models import ur10
 >>> robot = Robot.from_parameters(ur10())
