@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 #A Robot-model, at a very minimum, is a kinematic chain
 #The kinematic chain is defined by a series of parameters
 #The forward kinematics (FK) refer to the use of the kinematic equations of a robot to compute the pose of the end-effector
