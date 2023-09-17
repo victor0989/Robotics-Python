@@ -14,6 +14,8 @@
 https://pydy.readthedocs.io/en/stable/models.html
 (PYBOTICS)
 https://github.com/engnadeau/pybotics/blob/master/examples/dynamics.ipynb
+(pilz_robot_programming’s documentation)
+https://docs.ros.org/en/kinetic/api/pilz_robot_programming/html/index.html
 
 #EXAMPLES
 Create the Robot Model
